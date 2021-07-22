@@ -5,7 +5,6 @@
 *.slo
 *.lo
 *.o
-*.obj
 
 # Precompiled Headers
 *.gch
@@ -30,3 +29,7 @@
 *.exe
 *.out
 *.app
+
+# CLion folders
+cmake-build-debug/
+.idea/
