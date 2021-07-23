@@ -41,21 +41,21 @@ void CargadorImagenes::leerImagenes(const string& rutasImagenes, int umbral) {
 
 void CargadorImagenes::extraerPuntos() {
     for (int imagen = 0; imagen < this->cantidadImagenes; imagen++) {
+        CImg <char> imagenActual = this->imagenes[imagen];
         vector <Punto3D> puntosImagen;
-        for (int x = 0; x < this->ancho; x++) {
-            for (int y = 0; y < this->alto - 1; y++) {
-                CImg <char> imagenActual = this->imagenes[imagen];
-                if (stoi(to_string(imagenActual(y, x, 1, 1))) != stoi(to_string(imagenActual(y + 1, x, 1, 1)))) {
-                    if (stoi(to_string(imagenActual(y, x, 1, 1))) == 0) {
-                        Punto3D punto3D((float)y, (float)x, (float)imagen);
-                        puntosImagen.emplace_back(punto3D);
-                    } else {
-                        Punto3D punto3D((float)y+1, (float)x, (float)imagen);
-                        puntosImagen.emplace_back(punto3D);
-                    }
+        cimg_forXY(imagenActual, x, y) {
+            if (to_string(imagenActual.atXYZC(x, y, 1, 1))[0] != to_string(imagenActual.atXYZC(x + 1, y, 1, 1))[0]) {
+                if (to_string(imagenActual.atXYZC(x, y, 1, 1))[0] == '0') {
+                    Punto3D punto3D((float)x, (float)y, (float)imagen);
+                    puntosImagen.emplace_back(punto3D);
+                } else {
+                    Punto3D punto3D((float)x + 1, (float)y, (float)imagen);
+                    puntosImagen.emplace_back(punto3D);
                 }
             }
         }
         this->puntos.emplace_back(puntosImagen);
+        cout << "Termino extraer puntos imagen " << imagen << endl;
+        this->imagenes[imagen].display();
     }
 }
