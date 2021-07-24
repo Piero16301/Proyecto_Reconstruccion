@@ -1,6 +1,6 @@
-#include "CargadorImagenes.h"
+#include "ProcesadorImagenes.h"
 
-CImg <char> CargadorImagenes::binarizar(CImg<> &imagen, int umbral) const {
+CImg <char> ProcesadorImagenes::binarizar(CImg<> &imagen, int umbral) const {
     CImg <char> R(imagen.width(),imagen.height());
     for(int i=0;i< imagen.width();i++) {
         for (int j = 0; j < imagen.height(); j++) {
@@ -25,37 +25,50 @@ CImg <char> CargadorImagenes::binarizar(CImg<> &imagen, int umbral) const {
     return R;
 }
 
-void CargadorImagenes::leerImagenes(const string& rutasImagenes, int umbral) {
+void ProcesadorImagenes::leerImagenes(const string& rutasImagenes, int umbral) {
     ifstream archivoRutas(rutasImagenes.c_str());
     string ruta;
     while (getline(archivoRutas, ruta)) {
         CImg <float> imagenInicial(ruta.c_str());
         CImg <char> imagenFinal = binarizar(imagenInicial, umbral);
         this->imagenes.emplace_back(imagenFinal);
-        this->ancho = imagenFinal.width();
-        this->alto = imagenFinal.height();
         this->cantidadImagenes++;
     }
     archivoRutas.close();
 }
 
-void CargadorImagenes::extraerPuntos() {
+void ProcesadorImagenes::extraerPuntos(float distanciaImagenes) {
+    int totalPuntos = 0;
     for (int imagen = 0; imagen < this->cantidadImagenes; imagen++) {
         CImg <char> imagenActual = this->imagenes[imagen];
         vector <Punto3D> puntosImagen;
         cimg_forXY(imagenActual, x, y) {
             if (to_string(imagenActual.atXYZC(x, y, 1, 1))[0] != to_string(imagenActual.atXYZC(x + 1, y, 1, 1))[0]) {
                 if (to_string(imagenActual.atXYZC(x, y, 1, 1))[0] == '0') {
-                    Punto3D punto3D((float)x, (float)y, (float)imagen);
+                    Punto3D punto3D((float)x, (float)y, (float)imagen * distanciaImagenes);
                     puntosImagen.emplace_back(punto3D);
                 } else {
-                    Punto3D punto3D((float)x + 1, (float)y, (float)imagen);
+                    Punto3D punto3D((float)x + 1, (float)y, (float)imagen * distanciaImagenes);
                     puntosImagen.emplace_back(punto3D);
                 }
             }
         }
         this->puntos.emplace_back(puntosImagen);
-        cout << "Termino extraer puntos imagen " << imagen << endl;
-        this->imagenes[imagen].display();
+        cout << "Se han extraido " << setw(6) << puntosImagen.size() << " puntos de la imagen " << imagen + 1 << endl;
+        totalPuntos += (int)puntosImagen.size();
     }
+    cout << "\nSe han extraido " << setw(6) << totalPuntos << " puntos en total" << endl;
+}
+
+void ProcesadorImagenes::exportarPuntos(const string& ruta) {
+    cout << "\nExportando puntos..." << endl;
+    fstream archivoPuntos;
+    archivoPuntos.open(ruta.c_str(), ios::out);
+    for (auto &imagen : this->puntos) {
+        for (auto &punto : imagen) {
+            archivoPuntos << punto.coordenadaX << ' ' << punto.coordenadaY << ' ' << punto.coordenadaZ << endl;
+        }
+    }
+    archivoPuntos.close();
+    cout << "Fin de la exportacion" << endl;
 }
