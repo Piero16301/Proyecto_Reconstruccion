@@ -4,8 +4,6 @@
 #define HEIGHT 600
 
 int main(int argc, char** argv) {
-    Interfaz::iniciar();
-
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     int POS_X = (glutGet(GLUT_SCREEN_WIDTH) - WIDTH) >> 1;
@@ -13,6 +11,24 @@ int main(int argc, char** argv) {
     glutInitWindowPosition(POS_X, POS_Y);
     glutInitWindowSize(WIDTH, HEIGHT);
     glutCreateWindow("Reconstruccion 3D");
+
+    Interfaz::iniciar();
+
+    int submenuPuntos = glutCreateMenu(Interfaz::menuInterfaz);
+    glutAddMenuEntry("Puntos de bordes", 1);
+    glutAddMenuEntry("Puntos detallados", 2);
+
+    int submenuColores = glutCreateMenu(Interfaz::menuInterfaz);
+    glutAddMenuEntry("Puntos rojos", 3);
+    glutAddMenuEntry("Puntos verdes", 4);
+    glutAddMenuEntry("Puntos azules", 5);
+
+    int menuPrincipal = glutCreateMenu(Interfaz::menuInterfaz);
+    glutAddSubMenu("Tipo de puntos", submenuPuntos);
+    glutAddSubMenu("Color de puntos", submenuColores);
+
+    glutAddMenuEntry("Salir", 6);
+    glutAttachMenu(GLUT_RIGHT_BUTTON);
 
     glutReshapeFunc(Interfaz::funcionReshape);
     glutDisplayFunc(Interfaz::funcionDisplay);

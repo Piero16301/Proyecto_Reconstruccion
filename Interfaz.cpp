@@ -6,7 +6,7 @@ void Interfaz::iniciar() {
     // mostrarImagenes();
     procesador.extraerPuntosDetallados(7.0);
     procesador.extraerPuntosBordes(7.0);
-    procesador.exportarPuntos("../puntosDetallados.txt", "../puntosBordes.txt");*/
+    // procesador.exportarPuntos("../puntosDetallados.txt", "../puntosBordes.txt");*/
 
     // Carga puntos desde archivo
     procesador.cargarArchivo("../puntosDetallados.txt", "../puntosBordes.txt");
@@ -24,10 +24,26 @@ void Interfaz::funcionReshape(int w, int h) {
 void Interfaz::funcionDisplay() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    auto puntosMostrar = (tipoPuntos == 0) ? procesador.puntosBordes : procesador.puntosDetallados;
+
     glBegin(GL_POINTS);
-    for (auto &imagen : procesador.puntosBordes) {
+    for (auto &imagen : puntosMostrar) {
         for (auto &punto : imagen) {
-            glColor3f(1.0, 0.0, 0.0);
+            switch (colorPuntos) {
+                case 0: {
+                    glColor3f(1.0, 0.0, 0.0);
+                    break;
+                }
+                case 1: {
+                    glColor3f(0.0, 1.0, 0.0);
+                    break;
+                }
+                case 2: {
+                    glColor3f(0.0, 0.0, 1.0);
+                    break;
+                }
+                default: {}
+            }
             glVertex3f(punto.coordenadaX, punto.coordenadaY, punto.coordenadaZ);
         }
     }
@@ -72,6 +88,41 @@ void Interfaz::funcionMotion(int x, int y) {
     }
     posicionMouseX = (GLfloat)x;
     posicionMouseY = (GLfloat)y;
+    glutPostRedisplay();
+}
+
+void Interfaz::menuInterfaz(int value) {
+    switch (value) {
+        case 1: {
+            cout << "Mostrando puntos de bordes" << endl;
+            tipoPuntos = 0;
+            break;
+        }
+        case 2: {
+            cout << "Mostrando puntos detallados" << endl;
+            tipoPuntos = 1;
+            break;
+        }
+        case 3: {
+            cout << "Cambiando a puntos rojos" << endl;
+            colorPuntos = 0;
+            break;
+        }
+        case 4: {
+            cout << "Cambiando a puntos verdes" << endl;
+            colorPuntos = 1;
+            break;
+        }
+        case 5: {
+            cout << "Cambiando a puntos azules" << endl;
+            colorPuntos = 2;
+            break;
+        }
+        case 6: {
+            exit(0);
+        }
+        default: {}
+    }
     glutPostRedisplay();
 }
 

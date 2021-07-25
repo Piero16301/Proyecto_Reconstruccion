@@ -14,6 +14,9 @@ static GLfloat matrizMultiplicacion[16] = {1, 0, 0, 0,
                                            0, 0, 1, 0,
                                            0, 0, 0, 1};
 
+static int tipoPuntos = 0;
+static int colorPuntos = 0;
+
 class Interfaz {
 public:
     static void iniciar();
@@ -23,6 +26,8 @@ public:
     static void funcionDisplay();
 
     static void funcionMotion(int x, int y);
+
+    static void menuInterfaz(int value);
 
     static void mostrarImagenes();
 };
