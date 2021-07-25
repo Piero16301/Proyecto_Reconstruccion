@@ -7,6 +7,8 @@
 #include <fstream>
 #include <iomanip>
 
+#include <GL/freeglut.h>
+
 #include "CImg.h"
 #include "Punto3D.h"
 
@@ -24,6 +26,7 @@ public:
     void leerImagenes(const string& rutasImagenes, int umbral);
     void extraerPuntos(float distanciaImagenes);
     void exportarPuntos(const string& ruta);
+    void cargarArchivo(const string& rutaPuntos);
 };
 
 #endif //PROYECTO_RECONSTRUCCION_PROCESADORIMAGENES_H

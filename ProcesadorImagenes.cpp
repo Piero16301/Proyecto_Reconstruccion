@@ -45,10 +45,10 @@ void ProcesadorImagenes::extraerPuntos(float distanciaImagenes) {
         cimg_forXY(imagenActual, x, y) {
             if (to_string(imagenActual.atXYZC(x, y, 1, 1))[0] != to_string(imagenActual.atXYZC(x + 1, y, 1, 1))[0]) {
                 if (to_string(imagenActual.atXYZC(x, y, 1, 1))[0] == '0') {
-                    Punto3D punto3D((float)x, (float)y, (float)imagen * distanciaImagenes);
+                    Punto3D punto3D((float)x - 256, (float)y - 256, (float)imagen * distanciaImagenes);
                     puntosImagen.emplace_back(punto3D);
                 } else {
-                    Punto3D punto3D((float)x + 1, (float)y, (float)imagen * distanciaImagenes);
+                    Punto3D punto3D((float)x + 1 - 256, (float)y - 256, (float)imagen * distanciaImagenes);
                     puntosImagen.emplace_back(punto3D);
                 }
             }
@@ -71,4 +71,19 @@ void ProcesadorImagenes::exportarPuntos(const string& ruta) {
     }
     archivoPuntos.close();
     cout << "Fin de la exportacion" << endl;
+}
+
+void ProcesadorImagenes::cargarArchivo(const string &rutaPuntos) {
+    ifstream archivo;
+    archivo.open(rutaPuntos.c_str(), ios::in);
+    string lineaLeida;
+    vector <Punto3D> puntosImagen;
+    while (!archivo.eof()) {
+        getline(archivo, lineaLeida);
+        float x, y, z;
+        sscanf(lineaLeida.c_str(), "%f %f %f", &x, &y, &z);
+        Punto3D punto3D(x, y, z);
+        puntosImagen.emplace_back(punto3D);
+    }
+    this->puntos.emplace_back(puntosImagen);
 }
