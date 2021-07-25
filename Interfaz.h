@@ -1,9 +1,9 @@
 #ifndef PROYECTO_RECONSTRUCCION_INTERFAZ_H
 #define PROYECTO_RECONSTRUCCION_INTERFAZ_H
 
-#include "ProcesadorImagenes.h"
+#include "Procesador.h"
 
-static ProcesadorImagenes procesadorImagenes;
+static Procesador procesador;
 
 static GLfloat posicionMouseX;
 static GLfloat posicionMouseY;

@@ -2,13 +2,14 @@
 
 void Interfaz::iniciar() {
     // Calcular los puntos desde las imagenes
-    /*procesadorImagenes.leerImagenes("../imagenes.txt", 100);
+    /*procesador.leerImagenes("../imagenes.txt", 100);
     // mostrarImagenes();
-    procesadorImagenes.extraerPuntos(7.0);
-    // procesadorImagenes.exportarPuntos("../puntos.txt");*/
+    procesador.extraerPuntosDetallados(7.0);
+    procesador.extraerPuntosBordes(7.0);
+    procesador.exportarPuntos("../puntosDetallados.txt", "../puntosBordes.txt");*/
 
     // Carga puntos desde archivo
-    procesadorImagenes.cargarArchivo("../puntos.txt");
+    procesador.cargarArchivo("../puntosDetallados.txt", "../puntosBordes.txt");
 }
 
 void Interfaz::funcionReshape(int w, int h) {
@@ -24,7 +25,7 @@ void Interfaz::funcionDisplay() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glBegin(GL_POINTS);
-    for (auto &imagen : procesadorImagenes.puntos) {
+    for (auto &imagen : procesador.puntosBordes) {
         for (auto &punto : imagen) {
             glColor3f(1.0, 0.0, 0.0);
             glVertex3f(punto.coordenadaX, punto.coordenadaY, punto.coordenadaZ);
@@ -75,7 +76,7 @@ void Interfaz::funcionMotion(int x, int y) {
 }
 
 void Interfaz::mostrarImagenes() {
-    for (auto &it : procesadorImagenes.imagenes) {
+    for (auto &it : procesador.imagenes) {
         // cout << "Negro : '" << to_string(it.atXYZC(242,34, 1, 1)) << "'" << endl;
         // cout << "Blanco: '" << to_string(it.atXYZC(243,34, 1, 1)) << "'" << endl;
         // cout << "Punto : '" << to_string(it.atXYZC(244,34, 1, 1)) << "'" << endl;
