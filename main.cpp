@@ -12,6 +12,7 @@ int main(int argc, char** argv) {
     glutInitWindowSize(WIDTH, HEIGHT);
     glutCreateWindow("Reconstruccion 3D");
 
+    omp_set_num_threads(4);
     Interfaz::iniciar();
 
     int submenuPuntos = glutCreateMenu(Interfaz::menuInterfaz);
@@ -40,3 +41,17 @@ int main(int argc, char** argv) {
 
     return 0;
 }
+
+/*
+1 thread
+Detallados: 5.11221
+Bordes:     2.86888
+
+2 threads
+Detallados: 2.68332
+Bordes:     1.47612
+
+4 threads
+Detallados: 2.51741
+Bordes:     1.33912
+ */

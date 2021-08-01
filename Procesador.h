@@ -6,6 +6,7 @@
 #include <string>
 #include <fstream>
 #include <iomanip>
+#include <omp.h>
 
 #include <GL/freeglut.h>
 
@@ -17,9 +18,9 @@ using namespace std;
 
 class Procesador {
 public:
-    vector <CImg <char>> imagenes;
-    vector <vector <Punto3D>> puntosDetallados;
-    vector <vector <Punto3D>> puntosBordes;
+    vector <CImg <char>> imagenes{};
+    vector <vector <Punto3D>> puntosDetallados{};
+    vector <vector <Punto3D>> puntosBordes{};
     int cantidadImagenes = 0;
 
 public:

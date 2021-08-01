@@ -40,6 +40,8 @@ void Procesador::leerImagenes(const string& rutasImagenes, int umbral) {
 void Procesador::extraerPuntosDetallados(float distanciaImagenes) {
     cout << "===== Extrayendo puntos detallados =====" << endl;
     int totalPuntos = 0;
+    double inicio = omp_get_wtime();
+#pragma omp parallel for default(none) shared(distanciaImagenes, totalPuntos, cout)
     for (int imagen = 0; imagen < this->cantidadImagenes; imagen++) {
         CImg <char> imagenActual = this->imagenes[imagen];
         vector <Punto3D> puntosImagen;
@@ -54,16 +56,22 @@ void Procesador::extraerPuntosDetallados(float distanciaImagenes) {
                 }
             }
         }
+#pragma omp critical
         this->puntosDetallados.emplace_back(puntosImagen);
-        cout << "Se han extraido " << setw(6) << puntosImagen.size() << " puntos de la imagen " << imagen + 1 << endl;
+        cout << "Se han extraido " << setw(6) << puntosImagen.size() << " puntos de la imagen " << setw(2)
+             << imagen + 1 << " usando el thread " << omp_get_thread_num() << endl;
         totalPuntos += (int)puntosImagen.size();
     }
-    cout << "\nSe han extraido " << setw(6) << totalPuntos << " puntos en total" << endl << endl;
+    double fin = omp_get_wtime();
+    cout << "\nSe han extraido " << setw(6) << totalPuntos << " puntos en " << fin - inicio << " segundos"
+         << endl << endl;
 }
 
 void Procesador::extraerPuntosBordes(float distanciaImagenes) {
     cout << "===== Extrayendo puntos de bordes =====" << endl;
     int totalPuntos = 0;
+    double inicio = omp_get_wtime();
+#pragma omp parallel for default(none) shared(distanciaImagenes, totalPuntos, cout)
     for (int imagen = 0; imagen < this->cantidadImagenes; imagen++) {
         CImg <char> imagenActual = this->imagenes[imagen];
         vector <Punto3D> puntosImagen;
@@ -83,11 +91,15 @@ void Procesador::extraerPuntosBordes(float distanciaImagenes) {
             }
             puntosImagen.insert(puntosImagen.end(), puntosFila.begin(), puntosFila.end());
         }
+#pragma omp critical
         this->puntosBordes.emplace_back(puntosImagen);
-        cout << "Se han extraido " << setw(6) << puntosImagen.size() << " puntos de la imagen " << imagen + 1 << endl;
+        cout << "Se han extraido " << setw(6) << puntosImagen.size() << " puntos de la imagen " << setw(2)
+             << imagen + 1 << " usando el thread " << omp_get_thread_num() << endl;
         totalPuntos += (int)puntosImagen.size();
     }
-    cout << "\nSe han extraido " << setw(6) << totalPuntos << " puntos en total" << endl;
+    double fin = omp_get_wtime();
+    cout << "\nSe han extraido " << setw(6) << totalPuntos << " puntos en " << fin - inicio << " segundos"
+         << endl;
 }
 
 void Procesador::exportarPuntos(const string& rutaDetallados, const string& rutaBordes) {
