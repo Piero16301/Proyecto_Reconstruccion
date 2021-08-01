@@ -38,7 +38,7 @@ void Procesador::leerImagenes(const string& rutasImagenes, int umbral) {
 }
 
 void Procesador::extraerPuntosDetallados(float distanciaImagenes) {
-    cout << "===== Extrayendo puntos detallados =====" << endl;
+    cout << "=============== Extrayendo puntos detallados ===============" << endl;
     int totalPuntos = 0;
     double inicio = omp_get_wtime();
 #pragma omp parallel for default(none) shared(distanciaImagenes, totalPuntos, cout)
@@ -68,7 +68,7 @@ void Procesador::extraerPuntosDetallados(float distanciaImagenes) {
 }
 
 void Procesador::extraerPuntosBordes(float distanciaImagenes) {
-    cout << "===== Extrayendo puntos de bordes =====" << endl;
+    cout << "=============== Extrayendo puntos de bordes ===============" << endl;
     int totalPuntos = 0;
     double inicio = omp_get_wtime();
 #pragma omp parallel for default(none) shared(distanciaImagenes, totalPuntos, cout)
