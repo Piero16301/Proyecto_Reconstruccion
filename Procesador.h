@@ -6,7 +6,8 @@
 #include <string>
 #include <fstream>
 #include <iomanip>
-#include <omp.h>
+#include <chrono>
+//#include <omp.h>
 
 #include <GL/freeglut.h>
 
@@ -32,9 +33,13 @@ public:
 
     void extraerPuntosBordes(float distanciaImagenes);
 
-    void exportarPuntos(const string& rutaDetallados, const string& rutaBordes);
+    void exportarPuntosDetallados(const string& rutaDetallados);
 
-    void cargarArchivo(const string& rutaDetallados, const string& rutaBordes);
+    void exportarPuntosBordes(const string& rutaBordes);
+
+    void cargarArchivoDetallados(const string& rutaDetallados);
+
+    void cargarArchivoBordes(const string& rutaBordes);
 };
 
 #endif //PROYECTO_RECONSTRUCCION_PROCESADOR_H
