@@ -13,6 +13,8 @@ void Interfaz::iniciar() {
     // Carga puntos desde archivo
     procesador.cargarArchivoDetallados("../puntosDetallados.txt");
     procesador.cargarArchivoBordes("../puntosBordes.txt");
+    
+    cantidadImagenesMostrar = procesador.cantidadImagenes;
 }
 
 void Interfaz::funcionReshape(int w, int h) {
