@@ -6,7 +6,8 @@
 #include <string>
 #include <fstream>
 #include <iomanip>
-#include <omp.h>
+#include <chrono>
+//#include <omp.h>
 
 #include <GL/freeglut.h>
 
