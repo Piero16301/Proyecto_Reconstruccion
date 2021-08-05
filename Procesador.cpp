@@ -110,56 +110,100 @@ void Procesador::extraerPuntosBordes(float distanciaImagenes) {
          << " segundos" << endl;
 }
 
-void Procesador::exportarPuntos(const string& rutaDetallados, const string& rutaBordes) {
+void Procesador::exportarPuntosDetallados(const string &rutaDetallados) {
     cout << "\nExportando puntos detallados..." << endl;
     fstream archivoPuntosDetallados;
     archivoPuntosDetallados.open(rutaDetallados.c_str(), ios::out);
+    archivoPuntosDetallados << this->cantidadImagenes << endl;
+    for (auto &imagen : this->puntosDetallados) {
+        archivoPuntosDetallados << imagen.size() << endl;
+    }
     for (auto &imagen : this->puntosDetallados) {
         for (auto &punto : imagen) {
             archivoPuntosDetallados << punto.coordenadaX << ' ' << punto.coordenadaY << ' ' << punto.coordenadaZ << endl;
         }
     }
     archivoPuntosDetallados.close();
+}
 
-    cout << "Exportando puntos bordes..." << endl;
+void Procesador::exportarPuntosBordes(const string &rutaBordes) {
+    cout << "\nExportando puntos bordes..." << endl;
     fstream archivoPuntosBordes;
     archivoPuntosBordes.open(rutaBordes.c_str(), ios::out);
+    archivoPuntosBordes << this->cantidadImagenes << endl;
+    for (auto &imagen : this->puntosBordes) {
+        archivoPuntosBordes << imagen.size() <<  endl;
+    }
     for (auto &imagen : this->puntosBordes) {
         for (auto &punto : imagen) {
             archivoPuntosBordes << punto.coordenadaX << ' ' << punto.coordenadaY << ' ' << punto.coordenadaZ << endl;
         }
     }
     archivoPuntosBordes.close();
-
-    cout << "Fin de la exportacion" << endl;
 }
 
-void Procesador::cargarArchivo(const string& rutaDetallados, const string& rutaBordes) {
+void Procesador::cargarArchivoDetallados(const string &rutaDetallados) {
+    cout << "\nLeyendo puntos detallados..." << endl;
     ifstream archivoPuntosDetallados;
     archivoPuntosDetallados.open(rutaDetallados.c_str(), ios::in);
     string lineaLeidaDetallados;
-    vector <Punto3D> puntosImagenDetallados;
-    while (!archivoPuntosDetallados.eof()) {
-        getline(archivoPuntosDetallados, lineaLeidaDetallados);
-        float x, y, z;
-        sscanf(lineaLeidaDetallados.c_str(), "%f %f %f", &x, &y, &z);
-        Punto3D punto3D(x, y, z);
-        puntosImagenDetallados.emplace_back(punto3D);
-    }
-    //this->puntosDetallados.insert(this->puntosDetallados.end(), puntosImagenDetallados.begin(), puntosImagenDetallados.end());
-    archivoPuntosDetallados.close();
 
+    int cantidadElementos = 0;
+    getline(archivoPuntosDetallados, lineaLeidaDetallados);
+    sscanf(lineaLeidaDetallados.c_str(), "%d", &cantidadElementos);
+    this->cantidadImagenes = cantidadElementos;
+
+    vector <int> cantidadPuntosImagenes;
+    for (int i = 0; i < cantidadElementos; i++) {
+        int cantidadPuntos = 0;
+        getline(archivoPuntosDetallados, lineaLeidaDetallados);
+        sscanf(lineaLeidaDetallados.c_str(), "%d", &cantidadPuntos);
+        cantidadPuntosImagenes.emplace_back(cantidadPuntos);
+    }
+
+    for (auto &elementoImagen : cantidadPuntosImagenes) {
+        vector <Punto3D> puntosImagenDetallados;
+        for (int puntosImagen = 0; puntosImagen < elementoImagen; puntosImagen++) {
+            getline(archivoPuntosDetallados, lineaLeidaDetallados);
+            float x, y, z;
+            sscanf(lineaLeidaDetallados.c_str(), "%f %f %f", &x, &y, &z);
+            Punto3D punto3D(x, y, z);
+            puntosImagenDetallados.emplace_back(punto3D);
+        }
+        this->puntosDetallados.emplace_back(puntosImagenDetallados);
+    }
+    archivoPuntosDetallados.close();
+}
+
+void Procesador::cargarArchivoBordes(const string &rutaBordes) {
+    cout << "\nLeyendo puntos bordes..." << endl;
     ifstream archivoPuntosBordes;
     archivoPuntosBordes.open(rutaBordes.c_str(), ios::in);
     string lineaLeidaBordes;
-    vector <Punto3D> puntosImagenBordes;
-    while (!archivoPuntosBordes.eof()) {
+
+    int cantidadElementos = 0;
+    getline(archivoPuntosBordes, lineaLeidaBordes);
+    sscanf(lineaLeidaBordes.c_str(), "%d", &cantidadElementos);
+    this->cantidadImagenes = cantidadElementos;
+
+    vector <int> cantidadPuntosImagenes;
+    for (int i = 0; i < cantidadElementos; i++) {
+        int cantidadPuntos = 0;
         getline(archivoPuntosBordes, lineaLeidaBordes);
-        float x, y, z;
-        sscanf(lineaLeidaBordes.c_str(), "%f %f %f", &x, &y, &z);
-        Punto3D punto3D(x, y, z);
-        puntosImagenBordes.emplace_back(punto3D);
+        sscanf(lineaLeidaBordes.c_str(), "%d", &cantidadPuntos);
+        cantidadPuntosImagenes.emplace_back(cantidadPuntos);
     }
-    //this->puntosBordes.insert(this->puntosBordes.end(), puntosImagenBordes.begin(), puntosImagenBordes.end());
+
+    for (auto &elementoImagen : cantidadPuntosImagenes) {
+        vector <Punto3D> puntosImagenDetallados;
+        for (int puntosImagen = 0; puntosImagen < elementoImagen; puntosImagen++) {
+            getline(archivoPuntosBordes, lineaLeidaBordes);
+            float x, y, z;
+            sscanf(lineaLeidaBordes.c_str(), "%f %f %f", &x, &y, &z);
+            Punto3D punto3D(x, y, z);
+            puntosImagenDetallados.emplace_back(punto3D);
+        }
+        this->puntosBordes.emplace_back(puntosImagenDetallados);
+    }
     archivoPuntosBordes.close();
 }
