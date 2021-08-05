@@ -17,7 +17,7 @@ static GLfloat matrizMultiplicacion[16] = {1, 0, 0, 0,
 static int tipoPuntos = 0;
 static int colorPuntos = 0;
 
-static int cantidadImagenesMostrar = 39;
+static int cantidadImagenesMostrar = 0;
 
 class Interfaz {
 public:
