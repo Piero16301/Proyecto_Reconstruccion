@@ -19,10 +19,8 @@ using namespace std;
 class Procesador {
 public:
     vector <CImg <char>> imagenes{};
-    vector <Punto3D> puntosDetallados{};
-    vector <Punto3D> puntosBordes{};
-    vector <int> cantidadPuntosDetallados{};
-    vector <int> cantidadPuntosBordes{};
+    vector <vector <Punto3D>> puntosDetallados;
+    vector <vector <Punto3D>> puntosBordes;
     int cantidadImagenes = 0;
 
 public:
