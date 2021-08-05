@@ -39,9 +39,8 @@ void Procesador::leerImagenes(const string& rutasImagenes, int umbral) {
 
 void Procesador::extraerPuntosDetallados(float distanciaImagenes) {
     cout << "=============== Extrayendo puntos detallados ===============" << endl;
-    int totalPuntos = 0;
     double inicio = omp_get_wtime();
-#pragma omp parallel for default(none) shared(distanciaImagenes, totalPuntos, cout)
+//#pragma omp parallel for default(none) shared(distanciaImagenes, cout)
     for (int imagen = 0; imagen < this->cantidadImagenes; imagen++) {
         CImg <char> imagenActual = this->imagenes[imagen];
         vector <Punto3D> puntosImagen;
@@ -56,22 +55,22 @@ void Procesador::extraerPuntosDetallados(float distanciaImagenes) {
                 }
             }
         }
-#pragma omp critical
-        this->puntosDetallados.emplace_back(puntosImagen);
+//#pragma omp critical
+        this->puntosDetallados.insert(this->puntosDetallados.end(), puntosImagen.begin(), puntosImagen.end());
+        int ultimaCantidad = (imagen == 0) ? 0 : this->cantidadPuntosDetallados.back();
+        this->cantidadPuntosDetallados.emplace_back(ultimaCantidad + puntosImagen.size());
         cout << "Se han extraido " << setw(6) << puntosImagen.size() << " puntos de la imagen " << setw(2)
              << imagen + 1 << " usando el thread " << omp_get_thread_num() << endl;
-        totalPuntos += (int)puntosImagen.size();
     }
     double fin = omp_get_wtime();
-    cout << "\nSe han extraido " << setw(6) << totalPuntos << " puntos en " << fin - inicio << " segundos"
-         << endl << endl;
+    cout << "\nSe han extraido " << setw(6) << this->puntosDetallados.size() << " puntos en " << fin - inicio
+         << " segundos" << endl << endl;
 }
 
 void Procesador::extraerPuntosBordes(float distanciaImagenes) {
     cout << "=============== Extrayendo puntos de bordes ===============" << endl;
-    int totalPuntos = 0;
     double inicio = omp_get_wtime();
-#pragma omp parallel for default(none) shared(distanciaImagenes, totalPuntos, cout)
+//#pragma omp parallel for default(none) shared(distanciaImagenes, cout)
     for (int imagen = 0; imagen < this->cantidadImagenes; imagen++) {
         CImg <char> imagenActual = this->imagenes[imagen];
         vector <Punto3D> puntosImagen;
@@ -91,35 +90,32 @@ void Procesador::extraerPuntosBordes(float distanciaImagenes) {
             }
             puntosImagen.insert(puntosImagen.end(), puntosFila.begin(), puntosFila.end());
         }
-#pragma omp critical
-        this->puntosBordes.emplace_back(puntosImagen);
+//#pragma omp critical
+        this->puntosBordes.insert(this->puntosBordes.end(), puntosImagen.begin(), puntosImagen.end());
+        int ultimaCantidad = (imagen == 0) ? 0 : this->cantidadPuntosBordes.back();
+        this->cantidadPuntosBordes.emplace_back(ultimaCantidad + puntosImagen.size());
         cout << "Se han extraido " << setw(6) << puntosImagen.size() << " puntos de la imagen " << setw(2)
              << imagen + 1 << " usando el thread " << omp_get_thread_num() << endl;
-        totalPuntos += (int)puntosImagen.size();
     }
     double fin = omp_get_wtime();
-    cout << "\nSe han extraido " << setw(6) << totalPuntos << " puntos en " << fin - inicio << " segundos"
-         << endl;
+    cout << "\nSe han extraido " << setw(6) << this->puntosBordes.size() << " puntos en " << fin - inicio
+         << " segundos" << endl;
 }
 
 void Procesador::exportarPuntos(const string& rutaDetallados, const string& rutaBordes) {
     cout << "\nExportando puntos detallados..." << endl;
     fstream archivoPuntosDetallados;
     archivoPuntosDetallados.open(rutaDetallados.c_str(), ios::out);
-    for (auto &imagen : this->puntosDetallados) {
-        for (auto &punto : imagen) {
-            archivoPuntosDetallados << punto.coordenadaX << ' ' << punto.coordenadaY << ' ' << punto.coordenadaZ << endl;
-        }
+    for (auto &punto : this->puntosDetallados) {
+        archivoPuntosDetallados << punto.coordenadaX << ' ' << punto.coordenadaY << ' ' << punto.coordenadaZ << endl;
     }
     archivoPuntosDetallados.close();
 
     cout << "Exportando puntos bordes..." << endl;
     fstream archivoPuntosBordes;
     archivoPuntosBordes.open(rutaBordes.c_str(), ios::out);
-    for (auto &imagen : this->puntosBordes) {
-        for (auto &punto : imagen) {
-            archivoPuntosBordes << punto.coordenadaX << ' ' << punto.coordenadaY << ' ' << punto.coordenadaZ << endl;
-        }
+    for (auto &punto : this->puntosBordes) {
+        archivoPuntosBordes << punto.coordenadaX << ' ' << punto.coordenadaY << ' ' << punto.coordenadaZ << endl;
     }
     archivoPuntosBordes.close();
 
@@ -138,7 +134,7 @@ void Procesador::cargarArchivo(const string& rutaDetallados, const string& rutaB
         Punto3D punto3D(x, y, z);
         puntosImagenDetallados.emplace_back(punto3D);
     }
-    this->puntosDetallados.emplace_back(puntosImagenDetallados);
+    this->puntosDetallados.insert(this->puntosDetallados.end(), puntosImagenDetallados.begin(), puntosImagenDetallados.end());
     archivoPuntosDetallados.close();
 
     ifstream archivoPuntosBordes;
@@ -152,6 +148,6 @@ void Procesador::cargarArchivo(const string& rutaDetallados, const string& rutaB
         Punto3D punto3D(x, y, z);
         puntosImagenBordes.emplace_back(punto3D);
     }
-    this->puntosBordes.emplace_back(puntosImagenBordes);
+    this->puntosBordes.insert(this->puntosBordes.end(), puntosImagenBordes.begin(), puntosImagenBordes.end());
     archivoPuntosBordes.close();
 }

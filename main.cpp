@@ -33,6 +33,7 @@ int main(int argc, char** argv) {
 
     glutReshapeFunc(Interfaz::funcionReshape);
     glutDisplayFunc(Interfaz::funcionDisplay);
+    glutKeyboardFunc(Interfaz::funcionTeclado);
     glutMotionFunc(Interfaz::funcionMotion);
     glEnable(GL_DEPTH_TEST);
     glPointSize(1.0);

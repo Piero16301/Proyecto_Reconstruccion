@@ -6,7 +6,7 @@ void Interfaz::iniciar() {
     // mostrarImagenes();
     procesador.extraerPuntosDetallados(7.0);
     procesador.extraerPuntosBordes(7.0);
-    // procesador.exportarPuntos("../puntosDetallados.txt", "../puntosBordes.txt");
+    procesador.exportarPuntos("../puntosDetallados.txt", "../puntosBordes.txt");
 
     // Carga puntos desde archivo
     // procesador.cargarArchivo("../puntosDetallados.txt", "../puntosBordes.txt");
@@ -25,32 +25,54 @@ void Interfaz::funcionDisplay() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     auto puntosMostrar = (tipoPuntos == 0) ? procesador.puntosBordes : procesador.puntosDetallados;
+    auto cantidadPuntos = (tipoPuntos == 0) ? procesador.cantidadPuntosBordes : procesador.cantidadPuntosDetallados;
 
     glBegin(GL_POINTS);
-    for (auto &imagen : puntosMostrar) {
-        for (auto &punto : imagen) {
-            switch (colorPuntos) {
-                case 0: {
-                    glColor3f(1.0, 0.0, 0.0);
-                    break;
-                }
-                case 1: {
-                    glColor3f(0.0, 1.0, 0.0);
-                    break;
-                }
-                case 2: {
-                    glColor3f(0.0, 0.0, 1.0);
-                    break;
-                }
-                default: {}
+    for (int i = 0; i < cantidadPuntos[cantidadImagenesMostrar]; i++) {
+        switch (colorPuntos) {
+            case 0: {
+                glColor3f(1.0, 0.0, 0.0);
+                break;
             }
-            glVertex3f(punto.coordenadaX, punto.coordenadaY, punto.coordenadaZ);
+            case 1: {
+                glColor3f(0.0, 1.0, 0.0);
+                break;
+            }
+            case 2: {
+                glColor3f(0.0, 0.0, 1.0);
+                break;
+            }
+            default: {}
         }
+        glVertex3f(puntosMostrar[i].coordenadaX, puntosMostrar[i].coordenadaY, puntosMostrar[i].coordenadaZ);
     }
     glEnd();
 
     glFlush();
     glutSwapBuffers();
+}
+
+void Interfaz::funcionTeclado(unsigned char key, int x, int y) {
+    switch (key) {
+        case 'a': {
+            cantidadImagenesMostrar = (cantidadImagenesMostrar == 0) ? 0 : cantidadImagenesMostrar - 1;
+            break;
+        }
+        case 'd': {
+            cantidadImagenesMostrar = (cantidadImagenesMostrar == 39) ? 39 : cantidadImagenesMostrar + 1;
+            break;
+        }
+        case 'f': {
+            cantidadImagenesMostrar = 0;
+            break;
+        }
+        case 'r': {
+            cantidadImagenesMostrar = 39;
+            break;
+        }
+        default: {}
+    }
+    glutPostRedisplay();
 }
 
 void Interfaz::funcionMotion(int x, int y) {
