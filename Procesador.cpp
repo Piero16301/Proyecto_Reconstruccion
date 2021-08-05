@@ -42,9 +42,9 @@ void Procesador::leerImagenes(const string& rutasImagenes, int umbral) {
 void Procesador::extraerPuntosDetallados(float distanciaImagenes) {
     cout << "=============== Extrayendo puntos detallados ===============" << endl;
     int cantidadTotal = 0;
-    //double inicio = omp_get_wtime();
-    auto inicio = chrono::high_resolution_clock::now();
-//#pragma omp parallel for default(none) shared(distanciaImagenes, cantidadTotal, cout)
+    double inicio = omp_get_wtime();
+    //auto inicio = chrono::high_resolution_clock::now();
+#pragma omp parallel for default(none) shared(distanciaImagenes, cantidadTotal, cout)
     for (int imagen = 0; imagen < this->cantidadImagenes; imagen++) {
         CImg <char> imagenActual = this->imagenes[imagen];
         vector <Punto3D> puntosImagen;
@@ -59,25 +59,25 @@ void Procesador::extraerPuntosDetallados(float distanciaImagenes) {
                 }
             }
         }
-//#pragma omp critical
+#pragma omp critical
         this->puntosDetallados[imagen] = puntosImagen;
         cantidadTotal += (int)puntosImagen.size();
         cout << "Se han extraido " << setw(6) << puntosImagen.size() << " puntos de la imagen " << setw(2)
-             << imagen + 1 << endl;
+             << imagen + 1 << " usando el thread " << omp_get_thread_num() << endl;
     }
-    //double fin = omp_get_wtime();
-    auto fin = chrono::high_resolution_clock::now();
-    chrono::duration <double> duracion = fin - inicio;
-    cout << "\nSe han extraido " << setw(6) << cantidadTotal << " puntos en " << duracion.count()
+    double fin = omp_get_wtime();
+    //auto fin = chrono::high_resolution_clock::now();
+    //chrono::duration <double> duracion = fin - inicio;
+    cout << "\nSe han extraido " << setw(6) << cantidadTotal << " puntos en " << fin - inicio
          << " segundos" << endl << endl;
 }
 
 void Procesador::extraerPuntosBordes(float distanciaImagenes) {
     cout << "=============== Extrayendo puntos de bordes ===============" << endl;
     int cantidadTotal = 0;
-    //double inicio = omp_get_wtime();
-    auto inicio = chrono::high_resolution_clock::now();
-//#pragma omp parallel for default(none) shared(distanciaImagenes, cantidadTotal, cout)
+    double inicio = omp_get_wtime();
+    //auto inicio = chrono::high_resolution_clock::now();
+#pragma omp parallel for default(none) shared(distanciaImagenes, cantidadTotal, cout)
     for (int imagen = 0; imagen < this->cantidadImagenes; imagen++) {
         CImg <char> imagenActual = this->imagenes[imagen];
         vector <Punto3D> puntosImagen;
@@ -97,16 +97,16 @@ void Procesador::extraerPuntosBordes(float distanciaImagenes) {
             }
             puntosImagen.insert(puntosImagen.end(), puntosFila.begin(), puntosFila.end());
         }
-//#pragma omp critical
+#pragma omp critical
         this->puntosBordes[imagen] = puntosImagen;
         cantidadTotal += (int)puntosImagen.size();
         cout << "Se han extraido " << setw(6) << puntosImagen.size() << " puntos de la imagen " << setw(2)
-             << imagen + 1 << endl;
+             << imagen + 1 << " usando el thread " << omp_get_thread_num() << endl;
     }
-    //double fin = omp_get_wtime();
-    auto fin = chrono::high_resolution_clock::now();
-    chrono::duration <double> duracion = fin - inicio;
-    cout << "\nSe han extraido " << setw(6) << cantidadTotal << " puntos en " << duracion.count()
+    double fin = omp_get_wtime();
+    //auto fin = chrono::high_resolution_clock::now();
+    //chrono::duration <double> duracion = fin - inicio;
+    cout << "\nSe han extraido " << setw(6) << cantidadTotal << " puntos en " << fin - inicio
          << " segundos" << endl;
 }
 

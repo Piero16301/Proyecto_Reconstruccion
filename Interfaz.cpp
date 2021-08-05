@@ -2,17 +2,19 @@
 
 void Interfaz::iniciar() {
     // Calcular los puntos desde las imagenes
-    // procesador.leerImagenes("../imagenes.txt", 100);
+    procesador.leerImagenes("../imagenes.txt", 100);
     // mostrarImagenes();
-    // procesador.extraerPuntosDetallados(7.0);
-    // procesador.extraerPuntosBordes(7.0);
+    procesador.extraerPuntosDetallados(7.0);
+    procesador.extraerPuntosBordes(7.0);
 
-    // procesador.exportarPuntosDetallados("../puntosDetallados.txt");
-    // procesador.exportarPuntosBordes("../puntosBordes.txt");
+    procesador.exportarPuntosDetallados("../puntosDetallados.txt");
+    procesador.exportarPuntosBordes("../puntosBordes.txt");
 
     // Carga puntos desde archivo
-    procesador.cargarArchivoDetallados("../puntosDetallados.txt");
-    procesador.cargarArchivoBordes("../puntosBordes.txt");
+    // procesador.cargarArchivoDetallados("../puntosDetallados.txt");
+    // procesador.cargarArchivoBordes("../puntosBordes.txt");
+
+    cantidadImagenesMostrar = procesador.cantidadImagenes;
 }
 
 void Interfaz::funcionReshape(int w, int h) {

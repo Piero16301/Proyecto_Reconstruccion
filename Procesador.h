@@ -7,7 +7,7 @@
 #include <fstream>
 #include <iomanip>
 #include <chrono>
-//#include <omp.h>
+#include <omp.h>
 
 #include <GL/freeglut.h>
 
