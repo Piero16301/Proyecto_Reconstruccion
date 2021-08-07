@@ -3,4 +3,4 @@ Proyecto de reconstrucción a partir de un conjunto de imágenes.
 
 ## Demo
 
-![](reconstruccion_progresiva.gif)
+![](imagenes_reconstruccion/reconstruccion_progresiva.gif)
